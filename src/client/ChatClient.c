@@ -1,4 +1,4 @@
-#include "client.h"
+#include "ChatClient.h"
 
 int main(int argc, char const *argv[])
 {

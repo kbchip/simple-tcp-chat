@@ -1,3 +1,6 @@
+#ifndef CHAT_CLIENT_H
+#define CHAT_CLIENT_H
+
 // Include inportant libraries
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,3 +40,6 @@ struct MessageStruct
 } Message;
 
 // Function prototype definitions
+
+
+#endif
