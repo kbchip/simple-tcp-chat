@@ -10,12 +10,12 @@ endif
 
 CLIENT_SRC := $(wildcard src/client/*.c)
 SERVER_SRC := $(wildcard src/server/*.c)
-LIB_SRC := src/lib/properties.c
+LIB_SRC := $(wildcard src/lib/*.c)
 
 CLIENT_OBJ := $(CLIENT_SRC:src/%.c=build/%.o)
 SERVER_OBJ := $(SERVER_SRC:src/%.c=build/%.o)
-LIB_OBJ := build/lib/properties.o
-LIB_STATIC := build/lib/libproperties.a
+LIB_OBJ := $(LIB_SRC:src/%.c=build/%.o)
+LIB_STATIC := $(LIB_SRC:src/%c=build/%_lib.a)
 
 CLIENT_BIN := build/chat_client
 SERVER_BIN := build/chat_server
