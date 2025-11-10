@@ -54,7 +54,7 @@ void receiver_handler_stop(receiver_handler_t *handler)
     handler->running = false;
 }   
 
-bool reciever_handler_is_running(receiver_handler_t *handler)
+bool receiver_handler_is_running(receiver_handler_t *handler)
 {
     if (handler == NULL)
         return false;
@@ -67,7 +67,7 @@ TO DOS
 
 implements:
 
-reciever logic.
+receiver logic.
 void *receiver_handler_thread_func(void *arg)
 
 message processing (This will be the big switch statement).
