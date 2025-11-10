@@ -13,15 +13,15 @@ void* handle_client(void* arg) {
                     // if it is, inform client and immediately terminate connection
             case LEAVE:
                 // terminate connection
-            case NOTE:
-                // iterate over list of all users that are not the sender
-                    // relay message contents
             case SHUTDOWN:
                 // terminate connection, rest of SHUTDOWN is handle on client
             case SHUTDOWN_ALL:
                 // immediately terminate all connections and exit with special retval
             case DIRECT_MESSAGE:
                 // relay message contents to specified user
+            default: // this includes "case: NOTE" as well as no type
+                // iterate over list of all users that are not the sender
+                    // relay message contents
         }
 
 	// cleanup!
