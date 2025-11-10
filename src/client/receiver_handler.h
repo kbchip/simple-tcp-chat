@@ -13,7 +13,6 @@ It runs in a separate thread to while sender_handler runs user input
 
 #include <pthread.h>
 #include <stdbool.h>
-#include "message.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,11 +20,15 @@ It runs in a separate thread to while sender_handler runs user input
 #include <errno.h>
 #include <arpa/inet.h>  // for recv()
 
+#include "message.h"
+
 typedef struct {
     pthread_t thread_id;        // Receiver thread handle
     int server_socket_fd;       // Connected socket
     bool running;               // Is thread active
     bool stop_requested;        // Has stop been requested
+    pthread_mutex_t threadShutdownLock;  // Lock to prevent status updates race conditions
+    bool *threadShutdown;       // Used to check if a thread has been shutdown, true if so 
 } receiver_handler_t;
 
 // Starts the receiver thread (initializes fields as needed)

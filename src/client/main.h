@@ -1,45 +1,39 @@
-#ifndef CHAT_CLIENT_H
-#define CHAT_CLIENT_H
+#pragma once
 
-// Include inportant libraries
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+// Some handy macros
+#define CLIENT_PROPERTIES_FILENAME "client.properties"
+
 
 // Networking libraries
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-// Define some macro constants
-#define MAX_TEXT_CHARS 64
-#define MAX_USERNAME_CHARS 32
+// includes for server main file
+#include "properties.h"
+#include "message.h"
+#include "chat_node.h"
+#include "dbg.h"
 
-// For specific int sizes
-#include <stdint.h>
-
-// Defines the type of message that is being sent
-enum MessageTypeCode
-{
-    JOIN,
-    LEAVE,
-    NOTE,
-    SHUTDOWN,
-    SHUTDOWN_ALL,
-    DIRECT_MESSAGE
-};
+// Include client libraries
+#include "sender_handler.h"
+#include "receiver_handler.h"
 
 
-// Struct for sent message
-struct MessageStruct
-{
-    enum MessageTypeCode type;
-    char sender[ MAX_USERNAME_CHARS ];
-    char receiver[ MAX_USERNAME_CHARS ];
-    char text[ MAX_TEXT_CHARS ];
-} Message;
-
-// Function prototype definitions
-
-
-#endif
+// std libraries
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <syslog.h>
+#include <time.h>
+#include <signal.h>
+#include <stdbool.h>
