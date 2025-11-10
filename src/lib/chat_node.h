@@ -13,7 +13,7 @@
 // in place that implements linked lists for chat nodes. This code needs to be
 // OUTLINED.
 
-struct ChatterNodeStruct {
+typedef struct ChatterNodeStruct {
     u_int32_t ipAddress;
     u_int8_t portNumber;
     char username[ MAX_USERNAME_CHARS ];
