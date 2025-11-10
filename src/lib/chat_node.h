@@ -19,6 +19,6 @@ typedef struct ChatterNodeStruct {
     char username[ MAX_USERNAME_CHARS ];
 } ChatterNode;
 
-struct ChatterNodeList {
-    struct ChatterNodeStruct *nextChatter;
-};
+typedef struct ChatterNodeListStruct {
+    ChatterNode *nextChatter;
+} ChatterNodeList;
