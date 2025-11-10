@@ -4,6 +4,7 @@
 // TODO: May need this library included, but I'm not sure yet.
 // #include <stdint.h>
 #include <sys/types.h>
+#include <stdbool.h>
 
 #include "message.h"
 
