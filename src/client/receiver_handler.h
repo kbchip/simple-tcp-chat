@@ -23,22 +23,11 @@ It runs in a separate thread to while sender_handler runs user input
 #include "message.h"
 
 typedef struct {
-    pthread_t thread_id;        // Receiver thread handle
-    int server_socket_fd;       // Connected socket
-    bool running;               // Is thread active
-    bool stop_requested;        // Has stop been requested
-    pthread_mutex_t threadShutdownLock;  // Lock to prevent status updates race conditions
-    bool *threadShutdown;       // Used to check if a thread has been shutdown, true if so 
+    int server_socket;       // Connected socket
+    pthread_mutex_t *thread_shutdown_lock;  // Lock to prevent status updates race conditions
+    bool *is_thread_shutdown;       // Used to check if a thread has been shutdown, true if so 
 } receiver_handler_t;
 
-// Starts the receiver thread (initializes fields as needed)
-int receiver_handler_start(receiver_handler_t *handler, int socket_fd);
-
-// Requests the receiver thread to stop
-void receiver_handler_stop(receiver_handler_t *handler);
-
-// Checks if the receiver thread is active
-bool receiver_handler_is_running(receiver_handler_t *handler);
 
 // Continuously reads messages from server and passes them 
 // to receiver_handler_process_message()

@@ -21,47 +21,6 @@
 // Receiver Handler Lifecycle
 // ===============================================================
 
-int receiver_handler_start(receiver_handler_t *handler, int socket_fd)
-{
-    if (handler == NULL)
-        return -1;
-
-    handler->server_socket_fd = socket_fd;
-    handler->stop_requested = false;
-    handler->running = true;
-
-    if (pthread_create(&handler->thread_id, NULL, receiver_handler_thread_func, handler) != 0)
-    {
-        perror("[Receiver] Failed to create thread");
-        handler->running = false;
-        return -1;
-    }
-
-    return 0;
-}
-
-void receiver_handler_stop(receiver_handler_t *handler)
-{
-    if (handler == NULL || !handler->running)
-        return;
-
-    handler->stop_requested = true;
-
-    // Unblock recv() if it's currently waiting
-    shutdown(handler->server_socket_fd, SHUT_RD);
-
-    pthread_join(handler->thread_id, NULL);
-    handler->running = false;
-}   
-
-bool receiver_handler_is_running(receiver_handler_t *handler)
-{
-    if (handler == NULL)
-        return false;
-
-    return handler->running;
-}
-
 /*
 TO DOS
 
@@ -74,3 +33,88 @@ message processing (This will be the big switch statement).
 void receiver_handler_process_message(struct MessageStruct *msg)
 
 */
+
+void *receiver_handler_thread_func(void *arg)
+{
+    receiver_handler_t *handler = (receiver_handler_t *)arg;
+    if (handler == NULL) {
+        pthread_exit(NULL);
+    }
+
+    int sockfd = handler->server_socket;
+    Message msg;
+
+    printf("[Client] Receiver thread started.\n");
+
+    /*
+     * Skeleton loop:
+     * - recv() a fixed-size Message struct
+     * - on success, print a short representation to stdout
+     * - on error or disconnect, break and exit the thread
+     *
+     * This is intentionally minimal; you can expand it to handle
+     * partial reads, better error handling, and a full switch on
+     * message types later.
+     */
+    while (1) {
+        /* Check shared shutdown flag before blocking on recv() */
+        if (handler->thread_shutdown_lock != NULL && handler->is_thread_shutdown != NULL) {
+            pthread_mutex_lock(handler->thread_shutdown_lock);
+            bool should_shutdown = *(handler->is_thread_shutdown);
+            pthread_mutex_unlock(handler->thread_shutdown_lock);
+
+            if (should_shutdown) {
+                /* Other thread requested shutdown; exit loop */
+                printf("[Client] Receiver detected shutdown signal.\n");
+                break;
+            }
+        }
+
+        ssize_t n = recv(sockfd, &msg, sizeof(msg), 0);
+
+        if (n == 0) {
+            /* connection closed by peer */
+            printf("[Client] Server closed connection.\n");
+            break;
+        } else if (n < 0) {
+            if (errno == EINTR)
+                continue;
+            perror("[Client] recv");
+            break;
+        }
+
+        // Display message
+        receiver_handler_process_message( &msg );
+        
+    }
+
+    printf("[Client] Receiver thread exiting.\n");
+    pthread_exit(NULL);
+}
+
+void receiver_handler_process_message(struct MessageStruct *msg) {
+    /* Basic display of received message */
+    switch (msg->type) {
+        case JOIN:
+            printf("[Server] %s joined.\n", msg->sender);
+            break;
+        case LEAVE:
+            printf("[Server] %s left.\n", msg->sender);
+            break;
+        case NOTE:
+            printf("[%s] %s\n", msg->sender, msg->text);
+            break;
+        case DIRECT_MESSAGE:
+            printf("[DM from %s] %s\n", msg->sender, msg->text);
+            break;
+        case SHUTDOWN:
+            printf("[Server] Shutdown requested.\n");
+            break;
+        case SHUTDOWN_ALL:
+            printf("[Server] Shutdown all requested.\n");
+            break;
+        default:
+            printf("[Server] Unknown message type %d\n", (int)msg->type);
+            break;
+    }
+}

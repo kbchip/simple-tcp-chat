@@ -31,6 +31,10 @@ to the sender thread at startup
 */
 typedef struct {
     int server_socket; // Connected TCP socket to the chat server
-    bool is_connected; // Tracks whether the client has successfully joined
-    char username[64]; // Human-readable client name 
+    pthread_mutex_t *thread_shutdown_lock;  // Lock to prevent status updates race conditions
+    bool *is_thread_shutdown;       // Used to check if a thread has been shutdown, true if so 
 } sender_thread_args_t;
+
+
+// Function prototypes
+void* sender_thread(void* arg);
