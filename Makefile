@@ -30,9 +30,11 @@ $(LIB_STATIC): $(LIB_OBJ)
 
 $(CLIENT_BIN): $(CLIENT_OBJ) $(LIB_STATIC)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	cp src/client/*.properties build/
 
 $(SERVER_BIN): $(SERVER_OBJ) $(LIB_STATIC)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	cp src/server/*.properties build/
 
 build/%.o: src/%.c
 	@mkdir -p $(dir $@)
